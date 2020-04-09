@@ -120,7 +120,14 @@ var getCountries = async () => {
           // parse with hyperlink
           country = cell.children[0].next.children[0].data || "";
         }
-        if (country !== "Europe")
+        if (
+          country !== "Europe" &&
+          country !== "North America" &&
+          country !== "Ocenia" &&
+          country !== "Asia" &&
+          country !== "South America" &&
+          country !== "Africa"
+        )
           result.push({
             country,
           });
