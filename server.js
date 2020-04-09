@@ -81,16 +81,14 @@ var getCountries = async () => {
   const result = [];
   // get HTML and parse death rates
   const html = cheerio.load(response.data);
-  const countriesTable = html(
-    "#main_table_countries_today > tbody:nth-child(2)"
-  );
+  const countriesTable = html("#main_table_countries_today");
   const countriesTableCells = countriesTable
-    // .children("tbody")
+    .children("tbody")
     .children("tr")
     .children("td");
 
   // NOTE: this will change when table format change in website
-  const totalColumns = 12;
+  const totalColumns = 13;
   const countryColIndex = 0;
   const casesColIndex = 1;
   const todayCasesColIndex = 2;
@@ -122,7 +120,6 @@ var getCountries = async () => {
           // parse with hyperlink
           country = cell.children[0].next.children[0].data || "";
         }
-
         result.push({
           country,
         });
@@ -205,7 +202,7 @@ var getCountries = async () => {
   }
 
   const string = JSON.stringify(result.filter((x) => x.country !== "World"));
-
+  console.log(result);
   redis.set(keys.countries, string);
   console.log(`Updated countries: ${result.length} countries`);
 };
