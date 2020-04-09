@@ -210,7 +210,7 @@ var getCountries = async () => {
   }
 
   const string = JSON.stringify(result.filter((x) => x.country !== "World"));
-  console.log(result);
+
   redis.set(keys.countries, string);
   console.log(`Updated countries: ${result.length} countries`);
 };
@@ -275,18 +275,17 @@ app.get("/", async function (request, response) {
     View the dashboard here : <a href="https://coronastatistics.live">coronastatistics.live</a>`
   );
 });
-var listener = app.listen(process.env.PORT || 5001, function () {
+var listener = app.listen(process.env.PORT || 5000, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
 app.get("/all/", async function (req, res) {
   let all = JSON.parse(await redis.get(keys.all));
-  console.log("ALL: ", all);
+
   res.send(all);
 });
 app.get("/countries/", async function (req, res) {
   let countries = JSON.parse(await redis.get(keys.countries));
 
-  console.log("COUNTRIES: ", countries);
   if (req.query["sort"]) {
     try {
       const sortProp = req.query["sort"];
