@@ -69,6 +69,8 @@ var getAll = async () => {
 };
 
 var getCountries = async () => {
+  console.log("Starting get countries");
+
   let response;
   try {
     response = await axios.get("https://www.worldometers.info/coronavirus/");
@@ -100,6 +102,8 @@ var getCountries = async () => {
   const casesPerOneMillionColIndex = 8;
   const deathsPerOneMillionColIndex = 9;
   // minus totalColumns to skip last row, which is total
+  console.log("Starting get countries before for loop");
+
   for (let i = 0; i < countriesTableCells.length - totalColumns; i += 1) {
     const cell = countriesTableCells[i];
 
@@ -195,6 +199,7 @@ var getCountries = async () => {
       );
     }
   }
+  console.log("Starting get countries after for loop");
 
   const string = JSON.stringify(result.filter((x) => x.country !== "World"));
   console.log("REDIS COUNTRIES: ", string);
