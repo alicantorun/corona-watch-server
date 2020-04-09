@@ -197,6 +197,7 @@ var getCountries = async () => {
   }
 
   const string = JSON.stringify(result.filter((x) => x.country !== "World"));
+  console.log("REDIS COUNTRIES: ", string);
   redis.set(keys.countries, string);
   console.log(`Updated countries: ${result.length} countries`);
 };
