@@ -103,9 +103,11 @@ var getCountries = async () => {
   const deathsPerOneMillionColIndex = 9;
   // minus totalColumns to skip last row, which is total
   console.log("Starting get countries before for loop");
-  console.log("countries table cells: ", countriesTableCells);
+  console.log("countries table cells: ", countriesTableCells.length);
+  console.log("total colun: ", totalColumns);
 
   for (let i = 0; i < countriesTableCells.length - totalColumns; i += 1) {
+    console.log("INSIDE LOOP");
     const cell = countriesTableCells[i];
 
     // get country
