@@ -75,6 +75,7 @@ var getCountries = async () => {
     if (response.status !== 200) {
       console.log("Error 666", response.status);
     }
+    console.log(response);
   } catch (err) {
     return null;
   }
