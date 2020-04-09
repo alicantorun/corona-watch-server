@@ -75,7 +75,6 @@ var getCountries = async () => {
     if (response.status !== 200) {
       console.log("Error 666", response.status);
     }
-    console.log(response);
   } catch (err) {
     return null;
   }
@@ -267,10 +266,13 @@ var listener = app.listen(process.env.PORT || 5001, function () {
 });
 app.get("/all/", async function (req, res) {
   let all = JSON.parse(await redis.get(keys.all));
+  console.log("ALL: ", all);
   res.send(all);
 });
 app.get("/countries/", async function (req, res) {
   let countries = JSON.parse(await redis.get(keys.countries));
+
+  console.log("COUNTRIES: ", countries);
   if (req.query["sort"]) {
     try {
       const sortProp = req.query["sort"];
