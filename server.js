@@ -253,7 +253,7 @@ let calculateAllTimeline = async (timeline) => {
   return data;
 };
 
-app.get("/api/", async function (request, response) {
+app.get("/", async function (request, response) {
   console.log("hello");
   let a = JSON.parse(await redis.get(keys.all));
   response.send(
@@ -264,11 +264,11 @@ app.get("/api/", async function (request, response) {
 var listener = app.listen(process.env.PORT || 5001, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
-app.get("/api/all/", async function (req, res) {
+app.get("/all/", async function (req, res) {
   let all = JSON.parse(await redis.get(keys.all));
   res.send(all);
 });
-app.get("/api/countries/", async function (req, res) {
+app.get("/countries/", async function (req, res) {
   let countries = JSON.parse(await redis.get(keys.countries));
   if (req.query["sort"]) {
     try {
@@ -289,7 +289,7 @@ app.get("/api/countries/", async function (req, res) {
   }
   res.send(countries.reverse());
 });
-app.get("/api/countries/:country", async function (req, res) {
+app.get("/countries/:country", async function (req, res) {
   let countries = JSON.parse(await redis.get(keys.countries));
   let country = countries.find((e) =>
     e.country.toLowerCase().includes(req.params.country.toLowerCase())
@@ -301,16 +301,16 @@ app.get("/api/countries/:country", async function (req, res) {
   res.send(country);
 });
 
-app.get("/api/timeline", async function (req, res) {
+app.get("/timeline", async function (req, res) {
   let data = JSON.parse(await redis.get(keys.timeline));
   res.send(data);
 });
-app.get("/api/timeline/global", async function (req, res) {
+app.get("/timeline/global", async function (req, res) {
   let data = JSON.parse(await redis.get(keys.timelineglobal));
   res.send(data);
 });
 
-app.get("/api/timeline/:country", async function (req, res) {
+app.get("/timeline/:country", async function (req, res) {
   let data = JSON.parse(await redis.get(keys.timeline));
   let country = data.find(
     (e) => e.country.toLowerCase() === req.params.country.toLowerCase()
