@@ -126,6 +126,7 @@ var getCountries = async () => {
           country !== "Ocenia" &&
           country !== "Asia" &&
           country !== "South America" &&
+          country !== "Total:" &&
           country !== "Africa"
         )
           result.push({
