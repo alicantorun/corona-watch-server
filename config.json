@@ -3,7 +3,8 @@
     "all": "coronastatistics:all",
     "countries": "coronastatistics:countries",
     "timeline": "coronastatistics:timeline",
-    "timelineglobal": "coronastatistics:timelineglobal"
+    "timelineglobal": "coronastatistics:timelineglobal",
+    "chat": "coronastatistics:chat"
   },
   "interval": 600000
 }

@@ -1,17 +1,83 @@
 const express = require("express");
 const app = express();
 const axios = require("axios");
-// const cors = require("cors");
 const cheerio = require("cheerio");
 const Redis = require("ioredis");
 const config = require("./config.json");
+const http = require("http");
+const socketIo = require("socket.io");
 
-// app.use(cors());
-
-// create redis instance
 const redis = new Redis();
 
 const keys = config.keys;
+
+//Port from environment variable or default - 4001
+const port = process.env.PORT || 5000;
+
+//Setting up express and adding socketIo middleware
+// const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+const Message = require("./Message");
+const mongoose = require("mongoose");
+
+const uri =
+  "mongodb+srv://admin:1357955@cluster0-2egxn.mongodb.net/test?retryWrites=true&w=majority";
+// const port = process.env.PORT || 5000;
+
+mongoose.connect(uri, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+});
+
+//Setting up a socket with the namespace "connection" for new sockets
+
+io.on("connection", (socket) => {
+  const { id } = socket.client;
+  console.log(`User Connected: ${id}`);
+  // Get the last 20 messages from the database.
+  Message.find()
+    .sort({ createdAt: -1 })
+    .limit(20)
+    .exec((err, messages) => {
+      if (err) return console.error(err);
+
+      // Send the last messages to the user.
+      socket.emit("init", messages);
+    });
+
+  // Listen to connected users for a new message.
+  socket.on("message", (msg) => {
+    // Create a message with the content and the name of the user.
+    const message = new Message({
+      content: msg.content,
+      name: msg.name,
+    });
+
+    // Save the message to the database.
+    message.save((err) => {
+      if (err) return console.error(err);
+    });
+
+    // Notify all other users about a new message.
+    socket.broadcast.emit("push", msg);
+  });
+});
+
+// io.on("connection", (socket) => {
+
+//   socket.on("chat message", ({ nickname, msg }) => {
+//     let message = {};
+//     console.log("new message is received", { nickname, msg });
+//     message.timeStamp = Date.now();
+//     message.nickname = nickname;
+//     message.msg = msg;
+//     const string = JSON.stringify();
+//     redis.set(keys.chat, message);
+//     io.emit("chat message", { nickname, msg });
+//   });
+// });
 
 var getAll = async () => {
   // retrieve raw data
@@ -268,6 +334,10 @@ let calculateAllTimeline = async (timeline) => {
   return data;
 };
 
+var listener = server.listen(process.env.PORT || 5000, function () {
+  console.log("Your app is listening on port " + listener.address().port);
+});
+
 app.get("/", async function (request, response) {
   console.log("hello");
   let a = JSON.parse(await redis.get(keys.all));
@@ -276,14 +346,12 @@ app.get("/", async function (request, response) {
     View the dashboard here : <a href="https://coronastatistics.live">coronastatistics.live</a>`
   );
 });
-var listener = app.listen(process.env.PORT || 5000, function () {
-  console.log("Your app is listening on port " + listener.address().port);
-});
+
 app.get("/all/", async function (req, res) {
   let all = JSON.parse(await redis.get(keys.all));
-
   res.send(all);
 });
+
 app.get("/countries/", async function (req, res) {
   let countries = JSON.parse(await redis.get(keys.countries));
 
@@ -306,6 +374,7 @@ app.get("/countries/", async function (req, res) {
   }
   res.send(countries.reverse());
 });
+
 app.get("/countries/:country", async function (req, res) {
   let countries = JSON.parse(await redis.get(keys.countries));
   let country = countries.find((e) =>
@@ -322,6 +391,7 @@ app.get("/timeline", async function (req, res) {
   let data = JSON.parse(await redis.get(keys.timeline));
   res.send(data);
 });
+
 app.get("/timeline/global", async function (req, res) {
   let data = JSON.parse(await redis.get(keys.timelineglobal));
   res.send(data);
