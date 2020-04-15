@@ -6,6 +6,7 @@ const Redis = require("ioredis");
 const config = require("./config.json");
 const http = require("http");
 const socketIo = require("socket.io");
+require("dotenv").config();
 
 const redis = new Redis();
 
@@ -22,9 +23,7 @@ const io = socketIo(server);
 const Message = require("./Message");
 const mongoose = require("mongoose");
 
-const uri =
-  "mongodb+srv://admin:1357955@cluster0-2egxn.mongodb.net/test?retryWrites=true&w=majority";
-// const port = process.env.PORT || 5000;
+const uri = process.env.MONGODB_ATLAS_URI;
 
 mongoose.connect(uri, {
   useUnifiedTopology: true,
