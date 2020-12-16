@@ -12,6 +12,7 @@ This project has no longer been maintained.
 - SPA
 - internatinalisation (Highly scalable language support)
 - amCharts for explicit visualisation
+- Fully responsive mobile friendly design
 
 ## Tech Stack
 - React.js
